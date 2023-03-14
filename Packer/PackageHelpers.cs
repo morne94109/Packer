@@ -90,7 +90,6 @@ namespace com.mobiquity.packer.Helpers
 
         public static List<List<PackageItem>> CreateCombinations(int weightLimit, List<PackageItem> items)
         {
-            List<PackageItem> tempList = new List<PackageItem>();
             int maxWeight = weightLimit;
             List<List<PackageItem>> itemDictionary = new List<List<PackageItem>>();
 
@@ -106,12 +105,16 @@ namespace com.mobiquity.packer.Helpers
                 for (int z = 0; z < listSize; z++)
                 {
                     List<PackageItem> combo = itemDictionary[z];
-                    List<PackageItem> newCombo = new List<PackageItem>(combo);
-                    newCombo.Add(item);
+                    List<PackageItem> newCombo = new List<PackageItem>(combo)
+                    {
+                        item
+                    };
                     itemDictionary.Add(newCombo);
                 }
-                List<PackageItem> currentCombo = new List<PackageItem>();
-                currentCombo.Add(item);
+                List<PackageItem> currentCombo = new List<PackageItem>
+                {
+                    item
+                };
                 itemDictionary.Add(currentCombo);
 
             }
