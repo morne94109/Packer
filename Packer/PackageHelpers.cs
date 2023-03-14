@@ -88,6 +88,12 @@ namespace com.mobiquity.packer.Helpers
             return (weightLimit, items);
         }
 
+        /// <summary>
+        /// Create 2D list of all possible combinations, excluding combinations that weighs more than the weightLimit
+        /// </summary>
+        /// <param name="weightLimit"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public static List<List<PackageItem>> CreateCombinations(int weightLimit, List<PackageItem> items)
         {
             int maxWeight = weightLimit;
