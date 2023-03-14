@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Packer": {
+      "commandName": "Project",
+      "commandLineArgs": "test1.txt"
+    }
+  }
+}
