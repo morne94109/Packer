@@ -69,7 +69,7 @@ namespace com.mobiquity.packer.Helpers
 
             var itemSplit = data[1].RemoveWhitespace().Split(new[] { ")(" }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            if (itemSplit.Count >= PackageConstants.MAX_ITEMS)
+            if (itemSplit.Count > PackageConstants.MAX_ITEMS)
             {
                 throw new APIException($"Total items exceeded max allowed items of {PackageConstants.MAX_ITEMS}");
             }
