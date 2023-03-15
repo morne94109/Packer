@@ -48,9 +48,5 @@ namespace com.mobiquity.packer.Packer
 
             return result.Trim();
         }
-
-        
     }
-
-    
 }

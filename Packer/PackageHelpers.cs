@@ -117,6 +117,7 @@ namespace com.mobiquity.packer.Helpers
         public static List<List<PackageItem>> CreateCombinations(int weightLimit, List<PackageItem> items)
         {
             int maxWeight = weightLimit;
+            //Create 2D list
             List<List<PackageItem>> multiList = new List<List<PackageItem>>();
 
             foreach (var package in items)
@@ -129,11 +130,13 @@ namespace com.mobiquity.packer.Helpers
                 var listSize = multiList.Count;
 
                 for (int z = 0; z < listSize; z++)
-                {                    
+                {
+                    //Use previous items in list to create new list and add the current item to the list
                     List<PackageItem> newCombo = new List<PackageItem>(multiList[z])
                     {
                         package
                     };
+                    //Add list to 2D list
                     multiList.Add(newCombo);
                 }
                 
@@ -142,6 +145,7 @@ namespace com.mobiquity.packer.Helpers
                     package
                 };
 
+                //Add current item to 2D list
                 multiList.Add(currentCombo);
             }
 
@@ -178,6 +182,7 @@ namespace com.mobiquity.packer.Helpers
                         bestWeight = totalWeight;
                         bestCombination = combination;
                     }
+                    // if cost is the same check if the package is lighter
                     else if (totalCost == bestCost && totalWeight < bestWeight)
                     {
                         bestCost = totalCost;
@@ -193,7 +198,7 @@ namespace com.mobiquity.packer.Helpers
         /// <summary>
         /// Gets the cost using the specified items
         /// </summary>
-        /// <param name="items">The items</param>
+        /// <param name="items"The list of items to calculate</param>
         /// <returns>The total cost</returns>
         private static decimal GetCost(List<PackageItem> items)
         {
@@ -208,7 +213,7 @@ namespace com.mobiquity.packer.Helpers
         /// <summary>
         /// Gets the weight using the specified items
         /// </summary>
-        /// <param name="items">The items</param>
+        /// <param name="items">The list of items to calculate</param>
         /// <returns>The total weight</returns>
         private static decimal GetWeight(List<PackageItem> items)
         {
@@ -220,13 +225,17 @@ namespace com.mobiquity.packer.Helpers
             return totalWeight;
         }
 
+        /// <summary>
+        /// Returns a string with all whitespaces removed
+        /// </summary>
+        /// <param name="input">The string input</param>
+        /// <returns>String with no whitespaces</returns>
         public static string RemoveWhitespace(this string input)
         {
             return new string(input.ToCharArray()
                 .Where(c => !Char.IsWhiteSpace(c))
                 .ToArray());
         }
-
 
     }
 }
