@@ -1,4 +1,4 @@
-﻿using com.mobiquity.packer.Exceptions;
+using com.mobiquity.packer.Exceptions;
 using com.mobiquity.packer.Helpers;
 using com.mobiquity.packer.Models;
 using System;
@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace com.mobiquity.packer.Packer
 {
+    /// <summary>
+    /// The packer class
+    /// </summary>
     public class Packer
     {
         static void Main(string[] args)
@@ -18,7 +21,13 @@ namespace com.mobiquity.packer.Packer
             Console.WriteLine(message);
         }
 
-        public static string Pack(string filePath)
+        /// <summary>
+        /// Packs the items found in the file from file path
+        /// </summary>
+        /// <param name="filePath">The file path</param>
+        /// <exception cref="APIException">An error occurred while processing the file. </exception>
+        /// <returns>The string</returns>
+        private static string Pack(string filePath)
         {
             string result = "";
 
