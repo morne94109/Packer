@@ -1,33 +1,23 @@
 using com.mobiquity.packer.Exceptions;
 using com.mobiquity.packer.Helpers;
 using com.mobiquity.packer.Models;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Packer_Test")]
 namespace com.mobiquity.packer.Packer
 {
     /// <summary>
     /// The packer class
     /// </summary>
     public class Packer
-    {
-        static void Main(string[] args)
-        {
-            string input = args[0];
-            var message = Pack(input);
-            Console.WriteLine(message);
-        }
-
+    {       
         /// <summary>
         /// Packs the items found in the file from file path
         /// </summary>
         /// <param name="filePath">The file path</param>
         /// <exception cref="APIException">An error occurred while processing the file. </exception>
         /// <returns>The string</returns>
-        private static string Pack(string filePath)
+        internal static string Pack(string filePath)
         {
             string result = "";
 

@@ -31,7 +31,7 @@ namespace com.mobiquity.packer.Helpers
             }
             List<string> lines = File.ReadAllLines(filePath).ToList();
 
-            if(lines.Count == 0)
+            if (lines.Count == 0)
             {
                 throw new APIException($"File '{filePath}' was read successfully, but found no lines of data. Please check file has data in correct format.");
             }
@@ -56,7 +56,7 @@ namespace com.mobiquity.packer.Helpers
             string[] data = line.Split(':');
             if (int.TryParse(data[0].Trim(), out int weightLimit) == false)
             {
-                throw new APIException($"Unable able to determine the weight of package. 'Received {data[0].Trim()}' expected '##' that is not higher than {PackageConstants.MAX_WEIGHT_OF_PACKAGE}");
+                throw new APIException($"Unable able to determine the weight of package. Received '{data[0].Trim()}' expected '##' that is not higher than {PackageConstants.MAX_WEIGHT_OF_PACKAGE}");
             }
             else if (weightLimit > PackageConstants.MAX_WEIGHT_OF_PACKAGE)
             {
@@ -64,28 +64,26 @@ namespace com.mobiquity.packer.Helpers
             }
 
 
-            List<string> initialItems = new List<string>();
+            // List<string> initialItems = new List<string>();
             List<PackageItem> items = new List<PackageItem>();
 
-            foreach (string item in data[1].Split(' '))
+            var itemSplit = data[1].RemoveWhitespace().Split(new[] { ")(" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            if (itemSplit.Count >= PackageConstants.MAX_ITEMS)
             {
-                if (string.IsNullOrEmpty(item))
-                {
-                    continue;
-                }
-                else if (initialItems.Count > PackageConstants.MAX_ITEMS)
-                {
-                    throw new APIException($"Total items exceeded max allowed items of {PackageConstants.MAX_ITEMS}");
-                }
-                else
-                {
-                    initialItems.Add(item);
-                }
+                throw new APIException($"Total items exceeded max allowed items of {PackageConstants.MAX_ITEMS}");
             }
 
-            foreach (var item in initialItems)
+            List<string> splicedString = new List<string>();
+
+            foreach (var item in itemSplit)
             {
-                string[] itemData = item.Trim('(', ')').Split(',');
+                splicedString.Add(item.Trim('(', ')'));
+            }
+
+            foreach (var item in splicedString)
+            {
+                string[] itemData = item.Split(',');
                 int index = int.Parse(itemData[0]);
                 if (decimal.TryParse(itemData[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal weight) == false)
                 {
@@ -127,7 +125,7 @@ namespace com.mobiquity.packer.Helpers
                 {
                     continue;
                 }
-                
+
                 var listSize = itemDictionary.Count;
 
                 for (int z = 0; z < listSize; z++)
@@ -219,6 +217,13 @@ namespace com.mobiquity.packer.Helpers
                 totalWeight += x.Weight;
             });
             return totalWeight;
+        }
+
+        public static string RemoveWhitespace(this string input)
+        {
+            return new string(input.ToCharArray()
+                .Where(c => !Char.IsWhiteSpace(c))
+                .ToArray());
         }
 
 
