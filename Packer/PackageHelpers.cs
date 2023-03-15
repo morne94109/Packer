@@ -25,12 +25,16 @@ namespace com.mobiquity.packer.Helpers
         /// <returns>The lines</returns>
         public static List<string> ValidateFile(string filePath)
         {
+            //Check that file does exist
             if (File.Exists(filePath) == false)
             {
                 throw new APIException($"File '{filePath}' requested does not exist. Please check filename and location");
             }
+
+            //Read file
             List<string> lines = File.ReadAllLines(filePath).ToList();
 
+            //Check that file does contain any input
             if (lines.Count == 0)
             {
                 throw new APIException($"File '{filePath}' was read successfully, but found no lines of data. Please check file has data in correct format.");
@@ -69,6 +73,7 @@ namespace com.mobiquity.packer.Helpers
 
             var itemSplit = data[1].RemoveWhitespace().Split(new[] { ")(" }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
+            //Ensure that total items doesn't exceed 15
             if (itemSplit.Count > PackageConstants.MAX_ITEMS)
             {
                 throw new APIException($"Total items exceeded max allowed items of {PackageConstants.MAX_ITEMS}");
@@ -85,6 +90,8 @@ namespace com.mobiquity.packer.Helpers
             {
                 string[] itemData = item.Split(',');
                 int index = int.Parse(itemData[0]);
+
+                //Ensure that weight can be parsed and check if it meets any contrainsts
                 if (decimal.TryParse(itemData[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal weight) == false)
                 {
                     throw new APIException($"Unable able to determine the weight of item '{index}'. Received '{itemData[1]}' expected '##.##'");
@@ -94,6 +101,7 @@ namespace com.mobiquity.packer.Helpers
                     throw new APIException($"Item '{index}' that weights {weight} exceeds the maximum allowed weight of {PackageConstants.MAX_WEIGHT_OR_COST_ITEM}");
                 }
 
+                //Ensure that cost can be parsed and check if it meets any contrainsts
                 if (decimal.TryParse(itemData[2].TrimStart('€'), out decimal cost) == false)
                 {
                     throw new APIException($"Unable able to determine the cost of item '{index}'. Received '{itemData[2]}' expected '€##'");
@@ -102,9 +110,12 @@ namespace com.mobiquity.packer.Helpers
                 {
                     throw new APIException($"Item '{index}' that costs €{cost} exceeds the maximum allowed cost of €{PackageConstants.MAX_WEIGHT_OR_COST_ITEM}");
                 }
+
+                //Succesfully passed validation. Add to items list
                 items.Add(new PackageItem(index, weight, cost));
             }
 
+            //Return package weight limit and all items that can possibly fit
             return (weightLimit, items);
         }
 
@@ -161,6 +172,7 @@ namespace com.mobiquity.packer.Helpers
         /// <returns>The best combination</returns>
         public static List<PackageItem> FindBestCombination(List<List<PackageItem>> combinations, decimal weightlimit)
         {
+            //Create list to store the most suitable combinations
             List<PackageItem> bestCombination = new List<PackageItem>();
             decimal maxWeight = weightlimit;
             decimal bestCost = 0;
@@ -178,6 +190,7 @@ namespace com.mobiquity.packer.Helpers
                     decimal totalCost = GetCost(combination);
                     if (totalCost > bestCost)
                     {
+                        //Store store best values if condition is met
                         bestCost = totalCost;
                         bestWeight = totalWeight;
                         bestCombination = combination;
@@ -185,6 +198,7 @@ namespace com.mobiquity.packer.Helpers
                     // if cost is the same check if the package is lighter
                     else if (totalCost == bestCost && totalWeight < bestWeight)
                     {
+                        //Store store best values if condition is met
                         bestCost = totalCost;
                         bestWeight = totalWeight;
                         bestCombination = combination;
